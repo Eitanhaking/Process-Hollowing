@@ -28,16 +28,6 @@ typedef struct IMAGE_RELOCATION_ENTRY {
 } IMAGE_RELOCATION_ENTRY, *PIMAGE_RELOCATION_ENTRY;
 
 
-//Unmap The Original Memory From The Host
-BOOL UnmapHost(const LPPROCESS_INFORMATION lpProcInfo, LPVOID lpProcImgBaseAddr){
-	DWORD dwResult = NtUnmapViewOfSection(lpProcInfo->hProcess,lpProcImgBaseAddr);
-	if (dwResult)
-	{
-    	printf("*** Can't Unmap Memory From HOST ***\n");
-      	return FALSE;
-	}
-	return TRUE;
-}
 
 //Gets File Contenrs
 HANDLE GetFileContent(const LPSTR lpFilePath)
@@ -91,6 +81,18 @@ ProcAdresses GetProcAddrs(const PPROCESS_INFORMATION lpProcInfo)
 		return ProcAdresses{ NULL, NULL };
 
 	return ProcAdresses{ (LPVOID)ContX.Rdx, lpImgBaseAddr };
+}
+
+
+//Unmap The Original Memory From The Host
+BOOL UnmapHost(const LPPROCESS_INFORMATION lpProcInfo, LPVOID lpProcImgBaseAddr){
+	DWORD dwResult = NtUnmapViewOfSection(lpProcInfo->hProcess,lpProcImgBaseAddr);
+	if (dwResult)
+	{
+    	printf("*** Can't Unmap Memory From HOST ***\n");
+      	return FALSE;
+	}
+	return TRUE;
 }
 
 // Get Relocation Address For The Process
